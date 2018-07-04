@@ -1,7 +1,7 @@
 ﻿define(["sitecore", "/-/speak/v1/ExperienceEditor/ExperienceEditor.js"], function (Sitecore, ExperienceEditor) {
   var confirmDialog = Sitecore.Definitions.App.extend({
     initialized: function () {
-      $(this.MessageBody.viewModel.$el[0]).text(ExperienceEditor.Web.getUrlQueryStringValue("message"));
+      $(this.MessageBody.viewModel.$el[0]).html(decodeURIComponent(ExperienceEditor.Web.getUrlQueryStringValue("message", true)));
       this.setOkButtonClick();
       this.setCancelButtonClick();
     },

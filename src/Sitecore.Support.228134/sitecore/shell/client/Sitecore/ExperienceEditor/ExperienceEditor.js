@@ -204,6 +204,12 @@
   };
 
   experienceEditor.Common = {
+    replaceAll: function (text, oldValue, newValue) {
+      while (text.indexOf(oldValue) != -1) {
+        text = text.replace(oldValue, newValue);
+      }
+      return text;
+    },
     registerDocumentStyles: function (stylesCollection, documentElement) {
       var doc = documentElement || document;
       for (var i = 0; i < stylesCollection.length; i++) {
@@ -371,7 +377,7 @@
     },
 
     confirm: function (message, onCloseCallback) {
-      var dialogUrl = "/sitecore/client/Applications/ExperienceEditor/Dialogs/Confirm/?message=" + message;
+        var dialogUrl = "/sitecore/client/Applications/ExperienceEditor/Dialogs/Confirm/?message=" + encodeURIComponent(experienceEditor.Common.replaceAll(message, "\n", "<br/>"));
       experienceEditor.Dialogs.showModalDialog(dialogUrl, "", "", null, onCloseCallback);
     },
 
@@ -469,6 +475,16 @@
       parameterName = parameterName.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
       var regex = new RegExp("[\\?&]" + parameterName + "=([^&#]*)");
       var results = regex.exec(decodeURIComponent(url));
+      return results == null ? "" : results[1].replace(/\+/g, " ");
+    },
+
+    getUrlQueryStringValue: function (parameterName, doNotDecode) {
+      return this.getQueryStringValue(location.href, parameterName, doNotDecode);
+    },
+    getQueryStringValue: function (url, parameterName, doNotDecode) {
+      parameterName = parameterName.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + parameterName + "=([^&#]*)");
+      var results = regex.exec(doNotDecode ? url : decodeURIComponent(url));
       return results == null ? "" : results[1].replace(/\+/g, " ");
     },
 
